@@ -1,7 +1,22 @@
-<?php
+<?php 
+
+if($_SERVER['REQUEST_METHOD']=="POST"){
+require_once "config/conexao.php";
+
+$cmd = $pdo->prepare("SELECT * FROM servicos WHERE descontinuado=b'0'");
+$cmd->execute();
+$servicos = $cmd->fetchAll(PDO::FETCH_ASSOC);
+
+$sql = "SELECT nome FROM usuarios where tipo = 2 and ativo = 1 order by id asc limit 4;";
+$cmd = $pdo->prepare($sql);
+$cmd->execute();
+$clientes = $cmd->fetchAll(PDO::FETCH_ASSOC);
+
+}
 
 include "includes/header.php";
 include "includes/menu.php";
+
 
 ?>
 
@@ -10,13 +25,13 @@ include "includes/menu.php";
   <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner rounded shadow">
       <div class="carousel-item active">
-        <img src="assets/img/banner1.jpg" class="d-block w-100 banner-img" alt="Banner 1">
+        <img src="assests/img/banner1.jpg" class="d-block w-100 banner-img" alt="Banner 1">
       </div>
       <div class="carousel-item">
-        <img src="assets/img/banner2.jpg" class="d-block w-100 banner-img" alt="Banner 2">
+        <img src="assests/img/banner2.jpg" class="d-block w-100 banner-img" alt="Banner 2">
       </div>
       <div class="carousel-item">
-        <img src="assets/img/banner3.jpg" class="d-block w-100 banner-img" alt="Banner 3">
+        <img src="assests/img/banner3.jpg" class="d-block w-100 banner-img" alt="Banner 3">
       </div>
     </div>
 
@@ -36,16 +51,17 @@ include "includes/menu.php";
     <h2 class="text-center mb-4">Serviços Prestados</h2>
 
     <div class="row g-4">
-    
+    <?php foreach($servicos as $servico):?>
         <div class="col-md-3">
           <article class="card shadow h-100">
             <div class="card-body">
-              <h5>alterar</h5>
-              <p></p>
-              <p class="fw-bold text-success">R$ 350.00</p>
+              <h5><?= $servico['nome'] ?></h5>
+              <p><?= $servico['descricao'] ?></p>
+              <p class="fw-bold text-success">R$<?= number_format( $servico['preco'],2,',','.') ?></p>
             </div>
           </article>
         </div>
+      <?php endforeach;?>
     </div>
   </section>
 
@@ -91,13 +107,12 @@ include "includes/menu.php";
     </div>
   </section>
 
-  <section id="clientes" class="mt-5">
+  <section id="clientes" class="mt-5 bg-light pb-5">
     <h2 class="text-center mb-4">Principais Clientes</h2>
-    <div class="row text-center">
-      <div class="col-md-3">Sublime Grace Personalizados</div>
-      <div class="col-md-3">Casa Dossica</div>
-      <div class="col-md-3">Tilsp Traduções e Interprtações</div>
-      <div class="col-md-3">Softkleen Informática</div>
+    <div class="row text-center ">
+      <?php foreach($clientes as $cliente):?>
+        <div class="col-md-3"><?= $cliente['nome'] ?></div>
+      <?php endforeach;?>
     </div>
   </section>
 
@@ -106,6 +121,7 @@ include "includes/menu.php";
   </div>
 
 </main>
-
-
+<?php 
+include "includes/footer.php";
+?>
 
