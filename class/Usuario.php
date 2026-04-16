@@ -1,9 +1,9 @@
 <?php 
 
     // incluir a conexão
+    include_once "config/conexao.php";
 
     // declara a classe
-
     class Usuario{
 
         // atributos
@@ -28,7 +28,7 @@
             return $this->id;
         }
 
-
+        //NOME
         public function getNome(){
             return $this->nome;
         }
@@ -36,7 +36,7 @@
             $this->nome = $nome;
         }
 
-
+        //EMAIL
         public function getEmail(){
             return $this->email;
         }
@@ -44,7 +44,7 @@
             $this->email = $email;
         }
 
-
+        //SENHA
         public function getSenha(){
             return $this->senha;
         }
@@ -52,7 +52,7 @@
             $this->senha = $senha;
         }
 
-
+        //TIPO
         public function getTipo(){
             return $this->tipo;
         }
@@ -60,7 +60,7 @@
             $this->tipo = $tipo;
         }
 
-
+        //ATIVO
         public function getAtivo(){
             return $this->ativo;
         }
@@ -68,7 +68,7 @@
             $this->ativo = $ativo;
         }
 
-
+        //PRIMEIRO LOGIN
         public function getPrimeiroLogin(){
             return $this->primeiro_login;
         }
@@ -100,4 +100,21 @@
             }
         }
 
+        // inserir
+        public function inserir():bool{
+            $sql = "INSERT usuarios (nome, email, senha, tipo)
+             values (:nome, :email, :senha, :tipo)";
+            $cmd = $this->pdo->prepare($sql);
+            $cmd->bindValue(":nome", $this->nome);
+            $cmd->bindValue(":email", $this->email);
+            $cmd->bindValue(":senha", password_hash($this->senha,PASSWORD_DEFAULT));
+            $cmd->bindValue(":tipo", $this->tipo);
+            if($cmd->execute()){
+                $this->id = $this->pdo->lastInsertId();
+                return true;
+            }
+            return true;
+        }
+
+        
     }

@@ -1,6 +1,9 @@
 <?php 
-
 session_start();// Inicia ou retoma a sessão do usuário
+
+include "include/header.php";
+include "include/menu.php";
+
 
 /* Verifica se o usuário NÃO está logado ou se NÃO
 possui o nível de acesso correto (tipo 2) se for esse
@@ -8,8 +11,7 @@ o caso o usuario sera mandado para a tela de login */
 if(!isset($_SESSION['usuario_id'])|| $_SESSION["tipo"]!=2)// Redireciona para a página de login
   header("location: login.php");
 
-  include "include/header.php";
-  include "include/menu.php";
+
 
 ?>
 
