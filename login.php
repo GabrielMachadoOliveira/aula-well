@@ -1,36 +1,61 @@
 <?php 
-  session_start();
-  require "class/Usuario.php";
 
-  // var_dump($usuario::efetuarLogin('admin@servicehub.com', 'admin12'));
+// Desabilitar o cache para evitar o botão "voltar"
 
-  $msg = "";
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 
-  if($_SERVER['REQUEST_METHOD']==="POST"){
-    $email = filter_input(INPUT_POST, "email",FILTER_VALIDATE_EMAIL);
-    $senha = $_POST["senha"]?? null;
-    if(!$email || !$senha ){
-      $msg = "Preencha os dados corretamente";
-    }
-    $usuario = Usuario::efetuarLogin($email, $senha);
-    if(count($usuario)>0){
-      $_SESSION['usuario_id'] = $usuario['id'];
-      $_SESSION['nome'] = $usuario['nome'];
-      $_SESSION['tipo'] = $usuario['tipo'];
+header("Cache-Control: post-check=0, pre-check=0", false);
 
-      if($usuario['primeiro_login'] == 1){
-        header('location: primeiro_login.php');
-        exit;
-      }
-      if($usuario['tipo']==1){
-        header('location: admin_dashboard.php');
-      }
-      else{
-        header('location: cliente_dashboard.php');
-      }
+header("Pragma: no-cache");
 
-    }
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Data no passado
+
+
+session_start();//iniciar a sessão ou atualizar uma sessão aberta
+require "class/Usuario.php";
+  var_dump($_SESSION);
+//var_dump(Usuario::efetuarLogin('admin@servicehub.com', 'admin123'));
+
+$msg = "";
+
+if($_SERVER['REQUEST_METHOD']==="POST"){
+  $email = filter_input(INPUT_POST, "email",FILTER_VALIDATE_EMAIL);
+  $senha = $_POST["senha"]?? null;
+
+  if(!$email || !$senha ){
+
+    $msg = "Preencha os dados corretamente";
+
   }
+
+  $usuario = Usuario::efetuarLogin($email, $senha);
+
+  if(count($usuario)>0){
+
+    $_SESSION['usuario_id'] = $usuario['id'];
+    $_SESSION['nome'] = $usuario['nome'];
+    $_SESSION['tipo'] = $usuario['tipo'];
+    
+    if($usuario['primeiro_login'] == 1){
+      header('location: primeiro_login.php');
+      exit;
+    }
+
+    if($usuario['tipo']==1){
+
+      header('location: admin_dashboard.php');
+
+    }
+
+    else{
+
+       header('location: cliente_dashboard.php');
+
+    }
+
+  }
+
+}
 
 ?>
 
