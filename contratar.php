@@ -1,4 +1,7 @@
-
+<?php 
+include "includes/header.php";
+include "includes/menu.php";
+?>
 
 <main class="container mt-5">
   <h2 class="text-center mb-4">Contratar Serviço</h2>
@@ -61,4 +64,6 @@
   </form>
 </main>
 
-
+<?php 
+include "includes/footer.php";
+?>
