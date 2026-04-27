@@ -135,7 +135,7 @@
             $cmd = $this->pdo->prepare($sql);
             $cmd->bindValue(":nome", $this->nome);
             $cmd->bindValue(":email", $this->email);
-            $cmd->bindValue(":senha", password_hash($this->senha,PASSWORD_DEFAULT));
+            $cmd->bindValue(":senha", password_hash($this->senha,PASSWORD_DEFAULT));// password_hash é uma função nativa do PHP (a partir da versão 5.5.0) usada para criar uma representação segura (hash) de uma senha
             $cmd->bindValue(":tipo", $this->tipo);
 
             if($cmd->execute()){

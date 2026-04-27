@@ -1,49 +1,73 @@
 <?php
-include_once __DIR__ . "/../config/conexao.php";
+    // incluir a conexão
+    include_once "config/conexao.php";
 
-class Solicitacao {
-    private $id;
-    private $cliente_id;
-    private $descricao_problema;
-    private $status;
+class ServicoSolicitacao {
+    private $servico_id;
+    private $solicitacao_id;
+    private $data_assoc;
     private $pdo;
 
-    public function __construct() {
+    public function __construct(){
+
         $this->pdo = obterPdo();
+
     }
 
     // Métodos Obrigatórios
-    public function inserir(): bool {
-        $sql = "INSERT INTO solicitacoes (cliente_id, descricao_problema, status, data_cad) 
-                VALUES (:cid, :desc, 1, NOW())";
-        $cmd = $this->pdo->prepare($sql);
-        $cmd->bindValue(":cid", $this->cliente_id);
-        $cmd->bindValue(":desc", $this->descricao_problema);
-        if($cmd->execute()) {
-            $this->id = $this->pdo->lastInsertId();
-            return true;
-        }
-        return false;
+    public function getServico_id(){
+
+        return $this->servico_id;
+        
+    }
+    public function setServico_id(int $servico_id){
+
+        $this->servico_id = $servico_id;
+
     }
 
-    public static function listarPorCliente(int $cliente_id): array {
-        $cmd = obterPdo()->prepare("SELECT * FROM solicitacoes WHERE cliente_id = :cid ORDER BY data_cad DESC");
-        $cmd->bindValue(":cid", $cliente_id);
-        $cmd->execute();
-        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    public function getSolicitacao_id(){
+
+        return $this->solicitacao_id;
+
+    }
+        public function setSolicitacao_id(int $solicitacao_id){
+
+        $this->solicitacao_id = $solicitacao_id;
+
     }
 
-    public function responder(string $resposta, int $status): bool {
-        $sql = "UPDATE solicitacoes SET resposta_admin = :res, status = :st, data_resposta = NOW() WHERE id = :id";
-        $cmd = $this->pdo->prepare($sql);
-        $cmd->bindValue(":res", $resposta);
-        $cmd->bindValue(":st", $status);
-        $cmd->bindValue(":id", $this->id);
+    public function getData_assoc(){
+
+        return $this->data_assoc;
+
+    }
+        public function setData_assoc(int $data_assoc){
+
+        $this->data_assoc = $data_assoc;
+
+    }
+
+    public static function associar(int $servico_id, int $solicitacao_id): bool{
+        $sql = "insert servico_solicitacao values(:servico_id, :solicitacao_id, default)";
+        $cmd = obterPdo()->prepare($sql);
+        $cmd->bindValue(":servico_id", $servico_id);
+        $cmd->bindValue(":solicitacao_id", $solicitacao_id);
         return $cmd->execute();
     }
+    //ServicoSolicitacao::associar(1,4);
+    public function listarServicosDaSolicitacao(int $solicitacao_id): array{
 
-    // Getters/Setters necessários
-    public function setClienteId($id) { $this->cliente_id = $id; }
-    public function setDescricaoProblema($desc) { $this->descricao_problema = $desc; }
-    public function getId() { return $this->id; }
+        $sql = "SELECT se.*, ss.data_assoc
+                FROM servico_solicitacao ss
+                INNER JOIN servicos se ON se.id = ss.servico_id
+                WHERE ss.solicitacao_id = :solicitacao_id";
+        $cmd = obterPdo()->prepare($sql);
+        $cmd->bindValue(":solicitacao_id", $solicitacao_id, PDO::PARAM_INT);
+        $cmd->execute();
+        return $cmd->fetchALL(PDO::FETCH_ASSOC);
+
+    }
+
+
 }
